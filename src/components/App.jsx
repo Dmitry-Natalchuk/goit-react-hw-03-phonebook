@@ -5,6 +5,7 @@ import { Section } from "./Section/Section";
 import { ContactForm } from "./ContactForm/ContactForm";
 import { Filter } from "./Filter/Filter";
 import { ContactList } from "./ContactList/ContactList";
+const KEY = "contactList"
 
 export class App extends Component {
   state = {
@@ -15,6 +16,20 @@ export class App extends Component {
       {id: 'id-4', name: 'Annie Copeland', number: '227-91-26'},
     ],
     filter: '',
+  }
+
+  componentDidMount() {
+    const parsList = JSON.parse(localStorage.getItem(KEY))
+    if(parsList) {
+      this.setState({contacts : parsList})
+      return
+    }
+  }
+
+  componentDidUpdate(_,prevState) {
+    if(this.state.contacts !== prevState.contacts) {
+      localStorage.setItem(KEY,JSON.stringify(this.state.contacts))
+    }
   }
 
   addContact = ({name, number}) => {
@@ -44,11 +59,6 @@ deleteContactItem = id => {
 changeContact = event => {
   this.setState({filter : event.currentTarget.value})
 }
-
-/* chekContact = () => {
-  const {contacts,filter} = this.state
-  return contacts.filter(contact => contact.name.toLowerCase().includes(filter.toLowerCase()))
-} */
 
 render() {
   const { filter,contacts} = this.state;
